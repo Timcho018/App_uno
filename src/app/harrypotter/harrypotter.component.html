@@ -1,0 +1,67 @@
+<section class="page">
+  <header class="hero">
+    <a class="back" routerLink="/">← Universos</a>
+    <h1>Harry Potter</h1>
+    <p>{{ filtered().length }} de {{ characters().length }} personajes</p>
+  </header>
+
+  <div class="toolbar">
+    <input type="search" placeholder="Buscar por nombre o actor" [ngModel]="search()" (ngModelChange)="search.set($event)" />
+    <select [ngModel]="selectedHouse()" (ngModelChange)="selectedHouse.set($event)">
+      <option value="all">Todas las casas</option>
+      @for (house of houses(); track house) {
+        <option [value]="house">{{ house }}</option>
+      }
+    </select>
+    <button type="button" (click)="resetFilters()">Limpiar</button>
+  </div>
+
+  @if (loading()) {
+    <p class="status">Cargando Hogwarts...</p>
+  } @else if (error()) {
+    <p class="status error">{{ error() }}</p>
+  } @else {
+    <div class="grid">
+      @for (character of filtered(); track character.id) {
+        <article class="card" tabindex="0" (click)="open(character)" (keydown.enter)="open(character)">
+          @if (character.image) {
+            <img [src]="character.image" [alt]="character.name" loading="lazy" />
+          } @else {
+            <div class="avatar">{{ initials(character.name) }}</div>
+          }
+          <div>
+            <h2>{{ character.name }}</h2>
+            <p>{{ character.house || 'Sin casa' }} · {{ character.species }}</p>
+            <span>{{ character.alive ? 'Vivo' : 'Fallecido' }}</span>
+          </div>
+        </article>
+      }
+    </div>
+  }
+
+  @if (selected(); as character) {
+    <div class="modal-backdrop" (click)="close()">
+      <div class="modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+        <button type="button" class="close" (click)="close()">×</button>
+        <div class="modal-hero">
+          @if (character.image) {
+            <img [src]="character.image" [alt]="character.name" />
+          } @else {
+            <div class="avatar large">{{ initials(character.name) }}</div>
+          }
+          <div>
+            <span class="id" [style.background]="houseColour(character.house)">{{ character.house || 'Sin casa' }}</span>
+            <h2>{{ character.name }}</h2>
+            <p>{{ character.species }} · {{ character.gender }} · {{ character.alive ? 'Vivo' : 'Fallecido' }}</p>
+            <dl class="details">
+              <div><dt>Actor</dt><dd>{{ character.actor || 'N/D' }}</dd></div>
+              <div><dt>Patronus</dt><dd>{{ character.patronus || 'N/D' }}</dd></div>
+              <div><dt>Varita</dt><dd>{{ character.wand.wood || 'N/D' }} {{ character.wand.core ? '· ' + character.wand.core : '' }}</dd></div>
+              <div><dt>Nacimiento</dt><dd>{{ character.dateOfBirth || 'N/D' }}</dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</section>

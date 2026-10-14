@@ -1,0 +1,67 @@
+<section class="page">
+  <header class="hero">
+    <a class="back" routerLink="/">← Universos</a>
+    <h1>The Simpsons</h1>
+    <p>{{ characters().length }} personajes en esta página</p>
+  </header>
+
+  <form class="toolbar" (ngSubmit)="applyFilters()">
+    <input type="search" placeholder="Buscar por nombre" [ngModel]="search()" (ngModelChange)="search.set($event)" name="search" />
+    <select [ngModel]="selectedStatus()" (ngModelChange)="selectedStatus.set($event)" name="status">
+      <option value="all">Todos los estados</option>
+      <option value="Alive">Vivo</option>
+      <option value="Deceased">Fallecido</option>
+    </select>
+    <button type="submit">Filtrar</button>
+    <button type="button" (click)="resetFilters()">Limpiar</button>
+  </form>
+
+  @if (loading()) {
+    <p class="status">Cargando Springfield...</p>
+  } @else if (error()) {
+    <p class="status error">{{ error() }}</p>
+  } @else {
+    <div class="grid">
+      @for (character of filtered(); track character.id) {
+        <article class="card" tabindex="0" (click)="open(character)" (keydown.enter)="open(character)">
+          <img [src]="imageUrl(character, 200)" [alt]="character.name" loading="lazy" />
+          <div>
+            <h2>{{ character.name }}</h2>
+            <p>{{ character.occupation || 'Sin ocupación' }}</p>
+            <span>{{ capitalise(character.status) }}</span>
+          </div>
+        </article>
+      }
+    </div>
+
+    <footer class="pagination">
+      <button type="button" (click)="previousPage()" [disabled]="page() === 1">Anterior</button>
+      <span>Página {{ page() }} de {{ totalPages() }}</span>
+      <button type="button" (click)="nextPage()" [disabled]="page() === totalPages()">Siguiente</button>
+    </footer>
+  }
+
+  @if (selected(); as character) {
+    <div class="modal-backdrop" (click)="close()">
+      <div class="modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+        <button type="button" class="close" (click)="close()">×</button>
+        <div class="modal-hero">
+          <img [src]="imageUrl(character, 500)" [alt]="character.name" />
+          <div>
+            <span class="id">#{{ character.id }}</span>
+            <h2>{{ character.name }}</h2>
+            <p>{{ character.occupation }}</p>
+            <dl class="details">
+              <div><dt>Edad</dt><dd>{{ character.age ?? 'N/D' }}</dd></div>
+              <div><dt>Género</dt><dd>{{ character.gender || 'N/D' }}</dd></div>
+              <div><dt>Estado</dt><dd>{{ capitalise(character.status) }}</dd></div>
+            </dl>
+          </div>
+        </div>
+        @if (character.phrases.length) {
+          <blockquote class="quote">“{{ character.phrases[0] }}”</blockquote>
+        }
+      </div>
+    </div>
+  }
+</section>

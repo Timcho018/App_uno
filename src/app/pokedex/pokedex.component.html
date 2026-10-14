@@ -1,0 +1,160 @@
+<section class="pokedex">
+  <header class="page-header">
+    <a class="back" routerLink="/">← Universos</a>
+    <h1>Pokédex</h1>
+  </header>
+
+  <header class="toolbar">
+    <input
+      type="search"
+      placeholder="Buscar por nombre o ID"
+      [ngModel]="search()"
+      (ngModelChange)="search.set($event)"
+    />
+
+    <select [ngModel]="selectedType()" (ngModelChange)="selectedType.set($event)">
+      <option value="">Todos los tipos</option>
+      @for (type of types(); track type) {
+        <option [value]="type">{{ capitalise(type) }}</option>
+      }
+    </select>
+
+    <button type="button" (click)="resetFilters()">Limpiar</button>
+  </header>
+
+  @if (loading()) {
+    <p class="status">Cargando Pokédex...</p>
+  } @else if (error()) {
+    <p class="status error">{{ error() }}</p>
+  } @else {
+    <p class="count">{{ filtered().length }} Pokémon</p>
+
+    <div class="grid">
+      @for (pokemon of filtered(); track pokemon.id) {
+        <article class="card" tabindex="0" (click)="open(pokemon)" (keydown.enter)="open(pokemon)">
+          <img [src]="imageUrl(pokemon)" [alt]="pokemon.name" loading="lazy" />
+          <span class="id">#{{ pokemon.id }}</span>
+          <h2>{{ capitalise(pokemon.name) }}</h2>
+          <div class="types">
+            @for (slot of pokemon.types; track slot.type.name) {
+              <span class="type">{{ capitalise(slot.type.name) }}</span>
+            }
+          </div>
+        </article>
+      } @empty {
+        <p class="status">No hay resultados para los filtros actuales.</p>
+      }
+    </div>
+  }
+
+  @if (selected(); as pokemon) {
+    <div class="modal-backdrop" (click)="close()">
+      <div
+        class="modal pokemon-card"
+        [style.--accent]="selectedAccent()"
+        (click)="$event.stopPropagation()"
+        role="dialog"
+        aria-modal="true"
+      >
+        <button type="button" class="close" (click)="close()" aria-label="Cerrar">×</button>
+
+        <nav class="modal-nav">
+          <button type="button" (click)="prevPokemon()" aria-label="Pokémon anterior">‹</button>
+          <span>{{ pokemonIndex(pokemon) + 1 }} / {{ pokemons().length }}</span>
+          <button type="button" (click)="nextPokemon()" aria-label="Pokémon siguiente">›</button>
+        </nav>
+
+        <section class="modal-hero">
+          <div class="sprite-frame">
+            <img [src]="spriteUrl(pokemon)" [alt]="pokemon.name" />
+            <div class="sprite-glow"></div>
+          </div>
+
+          <div class="modal-title">
+            <div class="title-row">
+              <h2>{{ capitalise(pokemon.name) }}</h2>
+              <span class="hp">{{ statValue(pokemon, 'hp') }} HP</span>
+            </div>
+
+            <div class="meta-row">
+              <span class="number">#{{ pokemon.id }}</span>
+              <div class="types">
+                @for (slot of pokemon.types; track slot.type.name) {
+                  <span class="type" [style.--type-color]="accentFor(slot.type.name)">{{ capitalise(slot.type.name) }}</span>
+                }
+              </div>
+            </div>
+
+            <p class="description">
+              @if (speciesLoading()) {
+                Cargando descripción...
+              } @else if (speciesText()) {
+                {{ speciesText() }}
+              } @else {
+                Pokémon de tipo {{ pokemon.types.map((slot) => slot.type.name).join(' / ') }}.
+              }
+            </p>
+          </div>
+        </section>
+
+        <div class="viewer-strip">
+          @for (option of spriteOptions; track option.id) {
+            <button
+              type="button"
+              class="viewer-button"
+              [class.active]="selectedSprite() === option.id"
+              (click)="selectedSprite.set(option.id)"
+            >
+              {{ option.label }}
+            </button>
+          }
+        </div>
+
+        <div class="modal-body">
+          <div class="details">
+            <div>
+              <dt>Altura</dt>
+              <dd>{{ (pokemon.height / 10).toFixed(1) }} m</dd>
+            </div>
+            <div>
+              <dt>Peso</dt>
+              <dd>{{ (pokemon.weight / 10).toFixed(1) }} kg</dd>
+            </div>
+            <div>
+              <dt>Experiencia</dt>
+              <dd>{{ pokemon.base_experience }}</dd>
+            </div>
+            <div>
+              <dt>Total base</dt>
+              <dd>{{ pokemon.stats.reduce((sum, stat) => sum + stat.base_stat, 0) }}</dd>
+            </div>
+          </div>
+
+          <section class="abilities-section">
+            <h3>Habilidades</h3>
+            <div class="abilities">
+              @for (ability of pokemon.abilities; track ability.ability.name) {
+                <span class="ability-chip" [class.hidden]="ability.is_hidden">
+                  {{ capitalise(ability.ability.name) }}{{ ability.is_hidden ? ' · oculta' : '' }}
+                </span>
+              }
+            </div>
+          </section>
+
+          <section class="stats">
+            <h3>Estadísticas base</h3>
+            @for (stat of pokemon.stats; track stat.stat.name) {
+              <div class="stat-row">
+                <span>{{ statName(stat.stat.name) }}</span>
+                <div class="bar">
+                  <span [style.--fill.%]="(stat.base_stat / 255) * 100" style="width: var(--fill)"></span>
+                </div>
+                <strong>{{ stat.base_stat }}</strong>
+              </div>
+            }
+          </section>
+        </div>
+      </div>
+    </div>
+  }
+</section>

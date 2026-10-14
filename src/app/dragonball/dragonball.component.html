@@ -1,0 +1,64 @@
+<section class="page">
+  <header class="hero">
+    <a class="back" routerLink="/">← Universos</a>
+    <h1>Dragon Ball</h1>
+    <p>{{ filtered().length }} de {{ characters().length }} personajes</p>
+  </header>
+
+  <div class="toolbar">
+    <input type="search" placeholder="Buscar por nombre" [ngModel]="search()" (ngModelChange)="search.set($event)" />
+    <select [ngModel]="selectedRace()" (ngModelChange)="selectedRace.set($event)">
+      <option value="all">Todas las razas</option>
+      @for (race of races(); track race) {
+        <option [value]="race">{{ race }}</option>
+      }
+    </select>
+    <select [ngModel]="selectedGender()" (ngModelChange)="selectedGender.set($event)">
+      <option value="all">Todos los géneros</option>
+      <option value="Male">Masculino</option>
+      <option value="Female">Femenino</option>
+    </select>
+    <button type="button" (click)="resetFilters()">Limpiar</button>
+  </div>
+
+  @if (loading()) {
+    <p class="status">Cargando universo Dragon Ball...</p>
+  } @else if (error()) {
+    <p class="status error">{{ error() }}</p>
+  } @else {
+    <div class="grid">
+      @for (character of filtered(); track character.id) {
+        <article class="card" tabindex="0" (click)="open(character)" (keydown.enter)="open(character)">
+          <img [src]="character.image" [alt]="character.name" loading="lazy" />
+          <div>
+            <h2>{{ character.name }}</h2>
+            <p>{{ character.race }} · {{ capitalise(character.gender) }}</p>
+            <span>{{ character.affiliation }}</span>
+          </div>
+        </article>
+      }
+    </div>
+  }
+
+  @if (selected(); as character) {
+    <div class="modal-backdrop" (click)="close()">
+      <div class="modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+        <button type="button" class="close" (click)="close()">×</button>
+        <div class="modal-hero">
+          <img [src]="character.image" [alt]="character.name" />
+          <div>
+            <span class="id">#{{ character.id }}</span>
+            <h2>{{ character.name }}</h2>
+            <p>{{ character.race }} · {{ character.affiliation }}</p>
+            <dl class="details">
+              <div><dt>Ki</dt><dd>{{ character.ki }}</dd></div>
+              <div><dt>Ki máximo</dt><dd>{{ character.maxKi }}</dd></div>
+              <div><dt>Género</dt><dd>{{ capitalise(character.gender) }}</dd></div>
+            </dl>
+          </div>
+        </div>
+        <p class="description">{{ character.description }}</p>
+      </div>
+    </div>
+  }
+</section>

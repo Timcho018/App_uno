@@ -1,0 +1,93 @@
+<section class="page">
+  <header class="hero">
+    <a class="back" routerLink="/">← Universos</a>
+    <h1>Rick and Morty</h1>
+    <p>{{ totalCharacters() }} personajes encontrados</p>
+  </header>
+
+  <form class="toolbar" (ngSubmit)="applyFilters()">
+    <input type="search" placeholder="Buscar por nombre" [ngModel]="search()" (ngModelChange)="search.set($event)" name="search" />
+
+    <input type="search" placeholder="Especie" [ngModel]="species()" (ngModelChange)="species.set($event)" name="species" />
+
+    <select [ngModel]="selectedStatus()" (ngModelChange)="selectedStatus.set($event)" name="status">
+      <option value="all">Todos los estados</option>
+      <option value="Alive">Vivo</option>
+      <option value="Dead">Muerto</option>
+      <option value="unknown">Desconocido</option>
+    </select>
+
+    <select [ngModel]="selectedGender()" (ngModelChange)="selectedGender.set($event)" name="gender">
+      <option value="all">Todos los géneros</option>
+      <option value="Female">Femenino</option>
+      <option value="Male">Masculino</option>
+      <option value="Genderless">Sin género</option>
+      <option value="unknown">Desconocido</option>
+    </select>
+
+    <button type="submit">Filtrar</button>
+    <button type="button" (click)="resetFilters()">Limpiar</button>
+  </form>
+
+  @if (loading()) {
+    <p class="status">Cargando personajes...</p>
+  } @else if (error()) {
+    <p class="status error">{{ error() }}</p>
+  } @else {
+    <div class="grid">
+      @for (character of characters(); track character.id) {
+        <article class="card" tabindex="0" (click)="open(character)" (keydown.enter)="open(character)">
+          <img [src]="character.image" [alt]="character.name" loading="lazy" />
+          <div class="info">
+            <h2>{{ character.name }}</h2>
+            <p>{{ character.species }} · {{ capitalise(character.status) }}</p>
+            <span class="location">{{ character.location.name }}</span>
+          </div>
+        </article>
+      }
+    </div>
+
+    <footer class="pagination">
+      <button type="button" (click)="previousPage()" [disabled]="page() === 1">Anterior</button>
+      <span>Página {{ page() }} de {{ totalPages() }}</span>
+      <button type="button" (click)="nextPage()" [disabled]="page() === totalPages()">Siguiente</button>
+    </footer>
+  }
+
+  @if (selected(); as character) {
+    <div class="modal-backdrop" (click)="close()">
+      <div class="modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+        <button type="button" class="close" (click)="close()" aria-label="Cerrar">×</button>
+
+        <div class="modal-hero">
+          <img [src]="character.image" [alt]="character.name" />
+          <div>
+            <span class="id">#{{ character.id }}</span>
+            <h2>{{ character.name }}</h2>
+            <p class="subtitle">{{ character.species }}{{ character.type ? ' · ' + character.type : '' }}</p>
+            <span class="status-badge" [class.alive]="character.status === 'Alive'" [class.dead]="character.status === 'Dead'">{{ capitalise(character.status) }}</span>
+          </div>
+        </div>
+
+        <dl class="details">
+          <div>
+            <dt>Género</dt>
+            <dd>{{ character.gender }}</dd>
+          </div>
+          <div>
+            <dt>Origen</dt>
+            <dd>{{ character.origin.name }}</dd>
+          </div>
+          <div>
+            <dt>Última ubicación</dt>
+            <dd>{{ character.location.name }}</dd>
+          </div>
+          <div>
+            <dt>Episodios</dt>
+            <dd>{{ character.episode.length }}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  }
+</section>

@@ -1,0 +1,111 @@
+<section class="hub">
+  <div class="starfield" aria-hidden="true">
+    @for (star of stars; track $index) {
+      <span class="star" [style.left.%]="star.left" [style.top.%]="star.top" [style.width.px]="star.size" [style.height.px]="star.size" [style.animation-delay.s]="star.delay" [style.animation-duration.s]="star.duration"></span>
+    }
+  </div>
+
+  <header class="hub-header">
+    <p class="eyebrow">Multiverse Hub</p>
+    <h1>Explora 5 universos</h1>
+    <p class="subtitle">
+      Cada tarjeta combina portada visual y contenido en dos zonas para una mejor lectura.
+    </p>
+  </header>
+
+  <div class="universe-grid">
+    <a class="universe pokemon" routerLink="/pokemon">
+      <div class="visual-stage">
+        <img class="cover" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="Pikachu" (error)="hideImage($event)" />
+        <div class="cover-fallback" aria-hidden="true">⚡</div>
+        <div class="stage-emblem pokemon-emblem"></div>
+      </div>
+      <div class="content">
+        <span class="kicker">Colección</span>
+        <h2>Pokédex</h2>
+        <p>Tipos, stats, habilidades y fichas estilo carta.</p>
+        <div class="stats">
+          <span>151 Pokémon</span><span>Tipos</span><span>Stats</span>
+        </div>
+        <span class="cta">Entrar →</span>
+      </div>
+      <div class="glow"></div>
+    </a>
+
+    <a class="universe rick" routerLink="/rick-and-morty">
+      <div class="visual-stage">
+        <img class="cover" src="https://rickandmortyapi.com/api/character/avatar/1.jpeg" alt="Rick" (error)="hideImage($event)" />
+        <div class="cover-fallback" aria-hidden="true">🧪</div>
+        <svg class="portal" viewBox="0 0 200 200" aria-hidden="true">
+          <circle cx="100" cy="100" r="78" />
+          <circle cx="100" cy="100" r="52" />
+          <circle cx="100" cy="100" r="24" />
+        </svg>
+      </div>
+      <div class="content">
+        <span class="kicker">Multiverso</span>
+        <h2>Rick and Morty</h2>
+        <p>Estados, especies, géneros y paginación.</p>
+        <div class="stats">
+          <span>826 personajes</span><span>Estados</span><span>Ubicaciones</span>
+        </div>
+        <span class="cta">Abrir portal →</span>
+      </div>
+      <div class="glow rick-glow"></div>
+    </a>
+
+    <a class="universe simpsons" routerLink="/simpsons">
+      <div class="visual-stage">
+        <img class="cover" src="https://cdn.thesimpsonsapi.com/500/character/1.webp" alt="Homer Simpson" (error)="hideImage($event)" />
+        <div class="cover-fallback" aria-hidden="true">🍩</div>
+        <div class="stage-emblem homer-donut"></div>
+      </div>
+      <div class="content">
+        <span class="kicker">Springfield</span>
+        <h2>The Simpsons</h2>
+        <p>Ocupaciones, frases y estados de Springfield.</p>
+        <div class="stats">
+          <span>1182+ personajes</span><span>Estados</span><span>Frases</span>
+        </div>
+        <span class="cta">Visitar →</span>
+      </div>
+      <div class="glow simpsons-glow"></div>
+    </a>
+
+    <a class="universe dragonball" routerLink="/dragon-ball">
+      <div class="visual-stage">
+        <img class="cover" src="https://dragonball-api.com/characters/goku_normal.webp" alt="Goku" (error)="hideImage($event)" />
+        <div class="cover-fallback" aria-hidden="true">🐉</div>
+        <div class="dragon-orb"></div>
+      </div>
+      <div class="content">
+        <span class="kicker">Planeta Tierra</span>
+        <h2>Dragon Ball</h2>
+        <p>Razas, ki, afiliaciones y fichas detalladas.</p>
+        <div class="stats">
+          <span>58 guerreros</span><span>Razas</span><span>Ki</span>
+        </div>
+        <span class="cta">Luchar →</span>
+      </div>
+      <div class="glow dragonball-glow"></div>
+    </a>
+
+    <a class="universe potter" routerLink="/harry-potter">
+      <div class="visual-stage">
+        <img class="cover" src="https://ik.imagekit.io/hpapi/harry.jpg" alt="Harry Potter" (error)="hideImage($event)" />
+        <div class="cover-fallback" aria-hidden="true">⚡</div>
+        <div class="wand-spark"></div>
+      </div>
+      <div class="content">
+        <span class="kicker">Hogwarts</span>
+        <h2>Harry Potter</h2>
+        <p>Casas, varitas, patronus y personajes.</p>
+        <div class="stats">
+          <span>437 magos</span><span>Casas</span><span>Varitas</span>
+        </div>
+        <span class="cta">Entrar →</span>
+      </div>
+      <div class="glow potter-glow"></div>
+    </a>
+  </div>
+</section>
