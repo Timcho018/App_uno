@@ -182,6 +182,10 @@ export class PokedexComponent implements OnInit {
     return pokemon.stats.find((stat) => stat.stat.name === statName)?.base_stat ?? 0;
   }
 
+  baseTotal(pokemon: Pokemon): number {
+    return pokemon.stats.reduce((sum, stat) => sum + stat.base_stat, 0);
+  }
+
   imageUrl(pokemon: Pokemon): string {
     return (
       pokemon.sprites.other?.['official-artwork']?.front_default ??

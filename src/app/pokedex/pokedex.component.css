@@ -456,7 +456,7 @@
 .bar span {
   display: block;
   height: 100%;
-  width: 0;
+  width: var(--fill, 0%);
   border-radius: inherit;
   background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #ffffff));
   animation: statGrow 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;

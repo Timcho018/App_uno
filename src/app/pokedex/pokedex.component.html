@@ -1,7 +1,7 @@
 <section class="pokedex">
   <header class="page-header">
-    <a class="back" routerLink="/">← Universos</a>
-    <h1>Pokédex</h1>
+    <a class="back" routerLink="/">&larr; Universos</a>
+    <h1>Pok&eacute;dex</h1>
   </header>
 
   <header class="toolbar">
@@ -23,11 +23,11 @@
   </header>
 
   @if (loading()) {
-    <p class="status">Cargando Pokédex...</p>
+    <p class="status">Cargando Pok&eacute;dex...</p>
   } @else if (error()) {
     <p class="status error">{{ error() }}</p>
   } @else {
-    <p class="count">{{ filtered().length }} Pokémon</p>
+    <p class="count">{{ filtered().length }} Pok&eacute;mon</p>
 
     <div class="grid">
       @for (pokemon of filtered(); track pokemon.id) {
@@ -56,12 +56,12 @@
         role="dialog"
         aria-modal="true"
       >
-        <button type="button" class="close" (click)="close()" aria-label="Cerrar">×</button>
+        <button type="button" class="close" (click)="close()" aria-label="Cerrar">&times;</button>
 
         <nav class="modal-nav">
-          <button type="button" (click)="prevPokemon()" aria-label="Pokémon anterior">‹</button>
+          <button type="button" (click)="prevPokemon()" aria-label="Pokemon anterior">&lsaquo;</button>
           <span>{{ pokemonIndex(pokemon) + 1 }} / {{ pokemons().length }}</span>
-          <button type="button" (click)="nextPokemon()" aria-label="Pokémon siguiente">›</button>
+          <button type="button" (click)="nextPokemon()" aria-label="Pokemon siguiente">&rsaquo;</button>
         </nav>
 
         <section class="modal-hero">
@@ -87,11 +87,11 @@
 
             <p class="description">
               @if (speciesLoading()) {
-                Cargando descripción...
+                Cargando descripci&oacute;n...
               } @else if (speciesText()) {
                 {{ speciesText() }}
               } @else {
-                Pokémon de tipo {{ pokemon.types.map((slot) => slot.type.name).join(' / ') }}.
+                Pokemon de tipo {{ pokemon.types.map((slot) => slot.type.name).join(' / ') }}.
               }
             </p>
           </div>
@@ -126,7 +126,7 @@
             </div>
             <div>
               <dt>Total base</dt>
-              <dd>{{ pokemon.stats.reduce((sum, stat) => sum + stat.base_stat, 0) }}</dd>
+              <dd>{{ baseTotal(pokemon) }}</dd>
             </div>
           </div>
 
@@ -135,19 +135,19 @@
             <div class="abilities">
               @for (ability of pokemon.abilities; track ability.ability.name) {
                 <span class="ability-chip" [class.hidden]="ability.is_hidden">
-                  {{ capitalise(ability.ability.name) }}{{ ability.is_hidden ? ' · oculta' : '' }}
+                  {{ capitalise(ability.ability.name) }}{{ ability.is_hidden ? ' - oculta' : '' }}
                 </span>
               }
             </div>
           </section>
 
           <section class="stats">
-            <h3>Estadísticas base</h3>
+            <h3>Estad&iacute;sticas base</h3>
             @for (stat of pokemon.stats; track stat.stat.name) {
               <div class="stat-row">
                 <span>{{ statName(stat.stat.name) }}</span>
                 <div class="bar">
-                  <span [style.--fill.%]="(stat.base_stat / 255) * 100" style="width: var(--fill)"></span>
+                  <span [style.--fill]="((stat.base_stat / 255) * 100) + '%'"></span>
                 </div>
                 <strong>{{ stat.base_stat }}</strong>
               </div>
